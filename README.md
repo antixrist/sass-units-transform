@@ -1,4 +1,174 @@
 # SASS/SCSS Relative Units
+## Functions
+### EM/REM to PX
+```scss
+@function px ($input, $font-size: $base-font-size) {}
+```
+Calculate ```$input``` to ```px``` units.
+```scss
+$list-int			: 24 25 26 27;
+$list-px			: 24px 25px 26px 27px;
+$list-em			: 24em 25em 26em 27em;
+$list-rem			: 24rem 25rem 26rem 27rem;
+$list-mixed			: 24 25px 26em 27rem;
+$list-mixed-zero	: 0 0px 0em 0rem;
+$base-font-size		: 12px;
+#test11 { border-width : px($list-int); }
+#test12 { border-width : px($list-px); }
+#test13 { border-width : px($list-em, $base-font-size); }
+#test14 { border-width : px($list-rem); } // based on $base-font-size
+#test15 { border-width : px($list-mixed, $base-font-size); }
+#test16 { border-width : px($list-mixed-zero, $base-font-size); }
+```
+return:
+```css
+#test11 { border-width: 24px 25px 26px 27px; }
+#test12 { border-width: 24px 25px 26px 27px; }
+#test13 { border-width: 288px 300px 312px 324px; }
+#test14 { border-width: 288px 300px 312px 324px; }
+#test15 { border-width: 24px 25px 312px 324px; }
+#test16 { border-width: 0px 0px 0px 0px; }
+```
+
+### PX/REM to EM
+```scss
+@function em ($input, $font-size: $base-font-size) {}
+```
+Calculate ```$input``` to ```em``` units.
+```scss
+$list-int			: 24 25 26 27;
+$list-px			: 24px 25px 26px 27px;
+$list-em			: 24em 25em 26em 27em;
+$list-rem			: 24rem 25rem 26rem 27rem;
+$list-mixed			: 24 25px 26em 27rem;
+$list-mixed-zero	: 0 0px 0em 0rem;
+$font-size			: 16px;
+#test11 { padding : em($list-int, $font-size); }
+#test12 { padding : em($list-px, $font-size); }
+#test13 { padding : em($list-em, $font-size); }
+#test14 { padding : em($list-rem, $font-size); }
+#test15 { padding : em($list-mixed, $font-size); }
+#test16 { padding : em($list-mixed-zero, $font-size); }
+```
+return:
+```css
+#test11 { padding: 24em 25em 26em 27em; }
+#test12 { padding: 1.5em 1.5625em 1.625em 1.6875em; }
+#test13 { padding: 24em 25em 26em 27em; }
+#test14 { padding: 18em 18.75em 19.5em 20.25em; }
+#test15 { padding: 24em 1.5625em 26em 20.25em; }
+#test16 { padding: 0em 0em 0em 0em; }
+```
+
+
+### PX/EM to REM
+```scss
+@function rem ($input, $font-size: $base-font-size) {}
+```
+Calculate ```$input``` to ```rem``` units.
+```scss
+$list-int			: 24 25 26 27;
+$list-px			: 24px 25px 26px 27px;
+$list-em			: 24em 25em 26em 27em;
+$list-rem			: 24rem 25rem 26rem 27rem;
+$list-mixed			: 24 25px 26em 27rem;
+$list-mixed-zero	: 0 0px 0em 0rem;
+$base-font-size		: 12px;
+$font-size			: 16px;
+#test11 { margin : rem($list-int); }
+#test12 { margin : rem($list-px); }
+#test13 { margin : rem($list-em, $font-size); }
+#test14 { margin : rem($list-rem); }
+#test15 { margin : rem($list-mixed); }
+#test16 { margin : rem($list-mixed-zero); }
+```
+return:
+```css
+#test11 { margin: 24rem 25rem 26rem 27rem; }
+#test12 { margin: 2rem 2.08333rem 2.16667rem 2.25rem; }
+#test13 { margin: 32rem 33.33333rem 34.66667rem 36rem; }
+#test14 { margin: 24rem 25rem 26rem 27rem; }
+#test15 { margin: 24rem 2.08333rem 26rem 27rem; }
+#test16 { margin: 0rem 0rem 0rem 0rem; }
+```
+## Mixins
+### PX/REM to EM
+```scss
+@mixin em ($property, $value, $font-size: $base-font-size) {}
+```
+```scss
+$list-int			: 24 25 26 27;
+$list-px			: 24px 25px 26px 27px;
+$list-em			: 24em 25em 26em 27em;
+$list-rem			: 24rem 25rem 26rem 27rem;
+$list-mixed			: 24 25px 26em 27rem;
+$list-mixed-zero	: 0 0px 0em 0rem;
+$base-font-size		: 12px;
+#test17 {
+	@include em(margin, $list-int);
+	@include em(padding, $list-px);
+	@include em(border-width, $list-em);
+	@include em(outline-width, $list-rem);
+}
+	#test17-2 {
+		@include em(padding, $list-mixed);
+		@include em(margin, $list-mixed-zero);
+	}
+```
+return:
+```css
+#test17 {
+  margin: 24em 25em 26em 27em;
+  padding: 2em 2.08333em 2.16667em 2.25em;
+  border-width: 24em 25em 26em 27em;
+  outline-width: 24em 25em 26em 27em;
+}
+#test17-2 {
+  padding: 24em 2.08333em 26em 27em;
+  margin: 0em 0em 0em 0em;
+}
+```
+
+### PX/EM to REM
+```scss
+@mixin rem ($property, $value, $font-size: $base-font-size, $with-fallback: true) {}
+```
+```scss
+$list-int			: 24 25 26 27;
+$list-px			: 24px 25px 26px 27px;
+$list-em			: 24em 25em 26em 27em;
+$list-rem			: 24rem 25rem 26rem 27rem;
+$list-mixed			: 24 25px 26em 27rem;
+$list-mixed-zero	: 0 0px 0em 0rem;
+$base-font-size		: 12px;
+#test18 {
+	@include rem(margin, $list-int);
+	@include rem(padding, $list-px, $with-fallback: false);
+	@include rem(border-width, $list-em);
+	@include rem(outline-width, $list-rem);
+}
+	#test18-2 {
+		@include rem(padding, $list-mixed, $with-fallback: false);
+		@include rem(margin, $list-mixed-zero);
+	}
+```
+return:
+```css
+#test18 {
+  margin: 24px 25px 26px 27px;
+  margin: 24rem 25rem 26rem 27rem;
+  padding: 2rem 2.08333rem 2.16667rem 2.25rem;
+  border-width: 288px 300px 312px 324px;
+  border-width: 24rem 25rem 26rem 27rem;
+  outline-width: 288px 300px 312px 324px;
+  outline-width: 24rem 25rem 26rem 27rem;
+}
+#test18-2 {
+  padding: 24rem 2.08333rem 26rem 27rem;
+  margin: 0px 0px 0px 0px;
+  margin: 0rem 0rem 0rem 0rem;
+}
+```
 
 ## Helper functions
 
@@ -8,18 +178,10 @@
 ```
 Remove unit from input number.
 ```scss
-#test1 {
-  line-height : clear-unit(1.2);
-}
-#test2 {
-  line-height : clear-unit(1.2px);
-}
-#test3 {
-  line-height : clear-unit(1.2em);
-}
-#test4 {
-  line-height : clear-unit(1.2rem);
-}
+#test1 { line-height : clear-unit(1.2); }
+#test2 { line-height : clear-unit(1.2px); }
+#test3 { line-height : clear-unit(1.2em); }
+#test4 { line-height : clear-unit(1.2rem); }
 ```
 return:
 ```css
