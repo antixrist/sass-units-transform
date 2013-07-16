@@ -1,3 +1,4 @@
+@charset "IBM866";
 /**
  * SASS/SCSS Relative Units.
  */
@@ -7,11 +8,11 @@
  * Convert functions.
  */
 /** PX to EM (based on $font-size) **/
-/** EM to PX (based on $font-size) **/
+/** EM (based on $font-size) to PX **/
 /** PX to REM (based on $base-font-size) **/
-/** REM to PX (based on $font-size) **/
-/** EM to REM (based on $font-size) **/
-/** REM to EM (based on $font-size) **/
+/** REM (based on $base-font-size) to PX **/
+/** EM (based on $font-size) to REM (based on $base-font-size) **/
+/** REM (based on $base-font-size) to EM (based on $font-size) **/
 /* line 7, ../test/test.scss */
 #test {
   top: 24px;
