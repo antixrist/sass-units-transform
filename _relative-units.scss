@@ -1,7 +1,7 @@
 /**
  * SASS/SCSS Relative Units.
  */
-/** Hepler. Remove unit from input number **/
+/** Helper. Remove unit from input number **/
 @function clear-unit ($value) {
 	@if type-of($value) == "number" {
 		@if (unitless($value)) {
