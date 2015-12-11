@@ -408,7 +408,7 @@ $var-rem		: 24rem;
 $font-size	    : 16px;
 $base-font-size : 12px
 #test10 {
-  top			: remtoem($var-int, $$-font-size);
+  top			: remtoem($var-int, $-font-size);
 	right		: remtoem($var-px, $font-size);
 	bottom		: remtoem($var-em, $$-font-size);
 	left		: remtoem($var-rem, $font-size);
