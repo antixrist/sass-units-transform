@@ -1,0 +1,30 @@
+{
+  "name": "sass-units-transform",
+  "homepage": "https://github.com/antixrist/sass-units-transform",
+  "authors": [
+    "antixrist <ya.antixrist@gmail.com>"
+  ],
+  "description": "",
+  "keywords": [
+    "sass",
+    "unit",
+    "units",
+    "px",
+    "rem",
+    "em",
+    "convert",
+    "converting",
+    "transform",
+    "transformation"
+  ],
+  "main": "_sass-units-transform.scss",
+  "moduleType": [],
+  "license": "WTFPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

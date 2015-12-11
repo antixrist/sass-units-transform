@@ -1,7 +1,38 @@
-/**
- * SASS/SCSS Relative Units.
- */
-/** Hepler. Remove unit from input number **/
+//*********************************************
+//    SASS/SCSS Relative Units.
+//*********************************************
+
+$base-font-size: 14px !default;
+
+/** Helper. Convert string to list **/
+@function to-list($string, $delimiter: ' ') {
+	@if (type-of($string) == list) {
+		@return $string;
+	} @elseif (type-of($string) != string) {
+		@return ($string);
+	}
+	$list: ();
+	$sum: str-length($string);
+
+	@for $i from 1 through $sum {
+		$str: str-index($string, $delimiter);
+
+		@if str-length($string) >= 1 and $str == null {
+			$list: append($list, $string);
+			$string: '';
+		}
+
+		@if type-of($str) == number {
+			$each: str-slice($string, 0, ($str - 1));
+			$list: append($list, $each);
+			$string: str-slice($string, ($str + 1), $sum);
+		}
+	}
+
+	@return $list;
+}
+
+/** Helper. Remove unit from input number **/
 @function clear-unit ($value) {
 	@if type-of($value) == "number" {
 		@if (unitless($value)) {
@@ -17,10 +48,12 @@
 		}
 	} @else {
 		@warn "Not a number value: #{$value}";
+		@warn ('[Relative Units][function "clear-unit"] "#{$value}" is not a number!');
 		@return $value;
 	}
 }
-/** Hepler. Make unit from input number. Replace $value unit to target unit **/
+
+/** Helper. Make unit from input number. Replace $value unit to target unit **/
 @function replace-unit ($value, $unit: px) {
 	$value: clear-unit($value);
 	@if type-of($value) == "number" {
@@ -36,7 +69,7 @@
 			@return $value * 1pt;
 		}
 	} @else {
-		@warn "Not a number value: #{$value}";
+		@warn ('[Relative Units][function "replace-unit"] "#{$value}" is not a number!');
 		@return $value;
 	}
 }
@@ -50,24 +83,28 @@
 	$font-size	: clear-unit($font-size);
 	@return replace-unit($value / $font-size, em);
 }
+
 /** EM (based on $font-size) to PX **/
 @function em-to-px ($value, $font-size: $base-font-size) {
 	$value		: clear-unit($value);
 	$font-size	: clear-unit($font-size);
 	@return replace-unit($value * $font-size, px);
 }
+
 /** PX to REM (based on $base-font-size) **/
 @function px-to-rem ($value) {
 	$value			: clear-unit($value);
 	$base-font-size	: clear-unit($base-font-size);
 	@return replace-unit($value / $base-font-size, rem);
 }
+
 /** REM (based on $base-font-size) to PX **/
 @function rem-to-px ($value) {
 	$value			: clear-unit($value);
 	$base-font-size	: clear-unit($base-font-size);
 	@return replace-unit($value * $base-font-size, px);
 }
+
 /** EM (based on $font-size) to REM (based on $base-font-size) **/
 @function em-to-rem ($value, $font-size: $base-font-size) {
 	$value			: clear-unit($value);
@@ -75,6 +112,7 @@
 	$base-font-size	: clear-unit($base-font-size);
 	@return replace-unit($font-size * $value / $base-font-size, rem);
 }
+
 /** REM (based on $base-font-size) to EM (based on $font-size) **/
 @function rem-to-em ($value, $font-size: $base-font-size) {
 	$value			: clear-unit($value);
@@ -91,85 +129,84 @@
 		@each $number in $input {
 			$i: $i + 1;
 			$value	: make-unit-handler($number, $target-unit, $font-size);
-			$result : append($result, $value);
+			$result   : append($result, $value);
 		}
 		@return $result;
 	} @elseif type-of($input) == number {
-		
-		$input-unit: unit($input);
+		$input-unit: em;
+		@if (unitless($input) == false) {
+			$input-unit: unit($input);
+		}
 
-		@if $target-unit == px {
-
-			@if $input-unit == px {
+		@if ($target-unit == px) {
+			@if ($input-unit == px) {
 				$result-single: $input;
-			} @elseif $input-unit == em {
+			} @elseif ($input-unit == em) {
 				$result-single: em-to-px($input, $font-size);
-			} @elseif $input-unit == rem {
+			} @elseif ($input-unit == rem) {
 				$result-single: rem-to-px($input);
 			} @else {
 				$result-single: replace-unit($input, $target-unit);
 			}
-
-		} @elseif $target-unit == em {
-
-			@if $input-unit == px or unitless($input) {
+		} @elseif ($target-unit == em) {
+			@if ($input-unit == px) {
 				$result-single: px-to-em($input, $font-size);
-			} @elseif $input-unit == em {
+			} @elseif ($input-unit == em) {
 				$result-single: $input;
-			} @elseif $input-unit == rem {
+			} @elseif ($input-unit == rem) {
 				$result-single: rem-to-em($input, $font-size);
 			} @else {
 				$result-single: $input;
 			}
-
-		} @elseif $target-unit == rem {
-			@if $input-unit == px or unitless($input) {
+		} @elseif ($target-unit == rem) {
+			@if ($input-unit == px) {
 				$result-single: px-to-rem($input);
-			} @elseif $input-unit == em {
+			} @elseif ($input-unit == em) {
 				$result-single: em-to-rem($input, $font-size);
-			} @elseif $input-unit == rem {
+			} @elseif ($input-unit == rem) {
 				$result-single: $input;
 			} @else {
 				$result-single: $input;
 			}
-
 		} @else {
 			// $target-unit: px;
-			@if $input-unit == px {
+			@if ($input-unit == px) {
 				$result-single: $input;
-			} @elseif $input-unit == em {
+			} @elseif ($input-unit == em) {
 				$result-single: em-to-px($input, $font-size);
-			} @elseif $input-unit == rem {
+			} @elseif ($input-unit == rem) {
 				$result-single: rem-to-px($input);
 			} @else {
 				$result-single: replace-unit($input, $target-unit);
 			}
-
 		}
 	} @else {
 		$result-single: $input;
 	}
-	@return unquote($result-single);
+	@return $result-single;
+	//	@return unquote($result-single);
 }
 
 @function px ($input, $font-size: $base-font-size) {
 	@return make-unit-handler($input, px, $font-size);
 }
+
 @function em ($input, $font-size: $base-font-size) {
 	@return make-unit-handler($input, em, $font-size);
 }
+
 @function rem ($input, $font-size: $base-font-size) {
 	@return make-unit-handler($input, rem, $font-size);
 }
 
-@function to-unit ($value, $unit: rem) {
+@function to-unit ($unit, $value, $font-size: $base-font-size) {
 	// convert to needed $unit
-	@if $unit == px {
-		$value: px($value);
-	} @elseif $unit == em {
+	@if ($unit == px) {
+		$value: px($value, $font-size);
+	} @elseif ($unit == em) {
 		$value: em($value, $font-size);
-	} @elseif $unit == rem {
-		$value: rem($value);
+	} @elseif ($unit == rem) {
+		$value: rem($value, $font-size);
 	} @else {
 		$value: replace-unit($value, px);
 	}
@@ -179,9 +216,96 @@
 @mixin em ($property, $value, $font-size: $base-font-size) {
 	#{$property}: em($value, $font-size);
 }
+
 @mixin rem ($property, $value, $font-size: $base-font-size, $with-fallback: true) {
 	@if $with-fallback == true {
 		#{$property}: px($value, $font-size); // fallback for lte ie8
 	}
 	#{$property}: rem($value, $font-size);
+}
+
+@function sum ($unit, $args...) {
+	$sum: 0;
+	@each $arg in $args {
+		@if (type-of($arg) == number) {
+			@if ($unit == false) {
+				$arg: clear-unit($arg);
+			} @else {
+				$arg: to-unit($unit, $arg);
+			}
+			$sum: $sum + $arg;
+		} @else {
+			@warn('[Relative Units][function "sum"] "#{$arg}" is not a number!');
+		}
+	}
+
+	@return $sum;
+}
+
+@function normalize-dimensions ($dimensions) {
+	$list: to-list($dimensions);
+	$length: length($list);
+
+	@if ($length == 1) {
+		$first: nth($list, 1);
+		$list: append($list, $first);
+		$list: append($list, $first);
+		$list: append($list, $first);
+	} @elseif ($length == 2) {
+		$first: nth($list, 1);
+		$second: nth($list, 2);
+		$list: append($list, $first);
+		$list: append($list, $second);
+	} @elseif ($length == 3) {
+		$second: nth($list, 2);
+		$list: append($list, $second);
+	} @elseif ($length == 4) {
+
+	} @else {
+		@warn('[get-dimension] Invalid $dimensions: #{inspect($dimensions)}');
+		@return null;
+	}
+
+	@return $list;
+}
+
+@function get-dimension ($position, $dimensions) {
+	$list: normalize-dimensions($dimensions);
+	$position: unquote($position);
+
+	$index: null;
+	@if ($position == top) {
+		$index: 1;
+	} @elseif ($position == right) {
+		$index: 2;
+	} @elseif ($position == bottom) {
+		$index: 3;
+	} @elseif ($position == left) {
+		$index: 4;
+	}
+
+	@if ($index != null) {
+		@return nth($list, $index);
+	} @else {
+		@warn('[get-dimension] Invalid $position: #{inspect($position)}');
+		@return null;
+	}
+}
+
+@function dimensions-sum ($dimensions, $dir: vertical, $unit: px, $font-size: $base-font-size) {
+	$sum: 0;
+	$dimensions: to-list($dimensions);
+	$dimensions: px($dimensions, $font-size);
+
+	@if ($dir == vertical) {
+		$sum: get-dimension(top, $dimensions) + get-dimension(bottom, $dimensions);
+	} @elseif ($dir == horizontal) {
+		$sum: get-dimension(right, $dimensions) + get-dimension(left, $dimensions);
+	} @else {
+		@warn('[dimensions-sum] Invalid $dir: #{inspect($dir)}');
+		@return null;
+	}
+
+	// convert to needed $unit
+	@return to-unit($unit, $sum, $font-size);
 }
